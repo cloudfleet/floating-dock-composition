@@ -14,7 +14,7 @@ postgres:
     POSTGRES_USER: rails_db
 app:
   image: "cloudfleet/floating-dock"
-  link:
+  links:
     - postgres
   environment:
     DB_HOST: "postgres"
