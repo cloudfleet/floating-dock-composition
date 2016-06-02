@@ -1,0 +1,31 @@
+---
+registry:
+  image: library/registry:2
+  environment:
+    STORAGE_PATH: /storage
+  volumes:
+    - "/opt/floating-dock/registry/storage:/storage"
+postgres:
+  image: postgres
+  volumes:
+    - "/opt/floating-dock/database:/var/lib/postgresql/data"
+  environment:
+    POSTGRES_PASSWORD: rails_db
+    POSTGRES_USER: rails_db
+app:
+  image: "cloudfleet/floating-dock"
+  link:
+    - postgres
+  environment:
+    DB_HOST: "postgres"
+nginx:
+  image: "cloudfleet/nginx-registry-proxy"
+  ports:
+    - "443:443"
+  links:
+    - registry
+    - app
+  volumes:
+    - "/root/security:/etc/nginx/external"
+  environment:
+    DH_SIZE: "512"
