@@ -16,6 +16,8 @@ app:
   image: "cloudfleet/floating-dock"
   links:
     - postgres
+  env_file:
+    - .env
   environment:
     DB_HOST: "postgres"
 nginx:
