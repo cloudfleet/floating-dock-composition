@@ -20,6 +20,15 @@ app:
     - .env
   environment:
     DB_HOST: "postgres"
+worker:
+  image: "cloudfleet/floating-dock"
+  command: rake jobs:work
+  environment:
+    DB_HOST: postgres
+  env_file:
+    - .env
+  links:
+    - postgres
 nginx:
   image: "cloudfleet/nginx-registry-proxy"
   ports:
