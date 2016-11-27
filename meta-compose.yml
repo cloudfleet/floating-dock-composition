@@ -37,6 +37,6 @@ nginx:
     - registry
     - app
   volumes:
-    - "/root/security:/etc/nginx/external"
+    - "/etc/letsencrypt:/etc/letsencrypt"
   environment:
     DH_SIZE: "512"
