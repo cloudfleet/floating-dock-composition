@@ -6,7 +6,7 @@ registry:
   volumes:
     - "/opt/floating-dock/registry/storage:/storage"
 postgres:
-  image: postgres
+  image: postgres:9.5
   volumes:
     - "/opt/floating-dock/database:/var/lib/postgresql/data"
   environment:
