@@ -20,6 +20,8 @@ app:
     - .env
   environment:
     DB_HOST: "postgres"
+  volumes:
+    - "/root/.ssh:/root/.ssh"
 worker:
   image: "cloudfleet/floating-dock"
   command: rake jobs:work
@@ -29,6 +31,8 @@ worker:
     - .env
   links:
     - postgres
+  volumes:
+    - "/root/.ssh:/root/.ssh"
 nginx:
   image: "cloudfleet/nginx-registry-proxy"
   ports:
