@@ -1,1 +1,3 @@
 meta-compose-data.yml
+docker-compose.yml
+.env
