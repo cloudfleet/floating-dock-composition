@@ -3,8 +3,12 @@ registry:
   image: library/registry:2
   environment:
     STORAGE_PATH: /storage
+    REGISTRY_AUTH: htpasswd
+    REGISTRY_AUTH_HTPASSWD_PATH: /auth/docker-registry.htpasswd
+    REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
   volumes:
     - "/opt/floating-dock/registry/storage:/storage"
+    - "/root/security:/auth"
 postgres:
   image: postgres:9.5
   volumes:
@@ -30,14 +34,18 @@ worker:
   links:
     - postgres
 nginx:
-  image: "cloudfleet/nginx-registry-proxy"
+  image: bradjonesllc/docker-nginx-letsencrypt
   ports:
+    - "80:80"
     - "443:443"
   links:
-    - registry
     - app
-  volumes:
-    - "/etc/letsencrypt:/etc/letsencrypt"
-    - "/root/security:/etc/nginx/external"
+    - registry
   environment:
-    DH_SIZE: "512"
+    CERTS: marina.io,registry.marina.io
+    EMAIL: info@marina.io
+  volumes:
+    - "/opt/floating-dock/nginx/ssl:/etc/nginx/ssl"
+    - "/opt/floating-dock/nginx/ssl/dhparam:/etc/ssl/dhparam"
+    - "/opt/floating-dock/nginx/letsencrypt:/etc/letsencrypt"
+    - "/opt/floating-dock/floating-dock-composition/nginx.conf:/etc/nginx/conf.d/ssl.conf"
