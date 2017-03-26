@@ -3,9 +3,6 @@ registry:
   image: library/registry:2
   environment:
     STORAGE_PATH: /storage
-    REGISTRY_AUTH: htpasswd
-    REGISTRY_AUTH_HTPASSWD_PATH: /auth/docker-registry.htpasswd
-    REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
   volumes:
     - "/opt/floating-dock/registry/storage:/storage"
     - "/root/security:/auth"
