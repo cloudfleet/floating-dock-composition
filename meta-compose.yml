@@ -1,5 +1,12 @@
 ---
-registry:
+registryaarch64:
+  image: library/registry:2
+  environment:
+    STORAGE_PATH: /storage
+  volumes:
+    - "/opt/floating-dock/registry/storage:/storage"
+    - "/root/security:/auth"
+registryarmhf:
   image: library/registry:2
   environment:
     STORAGE_PATH: /storage
@@ -39,7 +46,7 @@ nginx:
     - app
     - registry
   environment:
-    CERTS: marina.io,registry.marina.io
+    CERTS: marina.io,aarch64.registry.marina.io,armv7.registry.marina.io
     EMAIL: info@marina.io
   volumes:
     - "/opt/floating-dock/nginx/ssl:/etc/nginx/ssl"
