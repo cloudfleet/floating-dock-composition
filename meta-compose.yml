@@ -2,10 +2,14 @@
 registry:
   image: library/registry:2
   environment:
-    STORAGE_PATH: /storage
+    REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /storage      
+    REGISTRY_AUTH_TOKEN_REALM: https://marina.io/jwt
+    REGISTRY_AUTH_TOKEN_SERVICE: container_registry
+    REGISTRY_AUTH_TOKEN_ISSUER: floating-dock
+    REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /registry/auth/registry.crt
   volumes:
     - "/opt/floating-dock/registry/storage:/storage"
-    - "/root/security:/auth"
+    - "/opt/floating-dock/registry/certs/registry.crt:/registry/auth/registry.crt"
 postgres:
   image: postgres:9.5
   volumes:
@@ -21,6 +25,10 @@ app:
     - .env
   environment:
     DB_HOST: "postgres"
+    DOCKER_REGISTRY_JWT_KEY: "/registry/auth/registry.key"
+  volumes:
+    - "/opt/floating-dock/registry/certs/registry.key:/registry/auth/registry.key"
+
 worker:
   image: "cloudfleet/floating-dock"
   command: "sh -c /bin/sh bundle exec rake jobs:work"
