@@ -1,18 +1,13 @@
 ---
-registryaarch64:
+{% for arch in archs %}
+registry{{arch}}:
   image: library/registry:2
   environment:
     STORAGE_PATH: /storage
   volumes:
-    - "/opt/floating-dock/registry/storage:/storage"
+    - "/opt/floating-dock/registry{{arch}}/storage:/storage"
     - "/root/security:/auth"
-registryarmhf:
-  image: library/registry:2
-  environment:
-    STORAGE_PATH: /storage
-  volumes:
-    - "/opt/floating-dock/registry/storage:/storage"
-    - "/root/security:/auth"
+{% endfor %}
 postgres:
   image: postgres:9.5
   volumes:
@@ -28,6 +23,7 @@ app:
     - .env
   environment:
     DB_HOST: "postgres"
+    ARCHS: {{','.join(archs)}}
 worker:
   image: "cloudfleet/floating-dock"
   command: "sh -c /bin/sh bundle exec rake jobs:work"
@@ -46,7 +42,7 @@ nginx:
     - app
     - registry
   environment:
-    CERTS: marina.io,aarch64.registry.marina.io,armv7.registry.marina.io
+    CERTS: {% for arch in archs %}{{arch}}.registry.marina.io,{% endfor %}marina.io
     EMAIL: info@marina.io
   volumes:
     - "/opt/floating-dock/nginx/ssl:/etc/nginx/ssl"
